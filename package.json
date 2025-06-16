@@ -1,0 +1,25 @@
+{
+  "name": "granjas-ng-backyard-manager",
+  "version": "1.0.0",
+  "description": "A web application to help manage backyard chickens, track egg production, set reminders, calculate feed requirements, and access AI-powered chicken breed information.",
+  "private": true,
+  "scripts": {
+    "build": "esbuild index.tsx --bundle --outfile=dist/bundle.js --jsx=automatic --platform=browser --define:process.env.API_KEY=\\"\\"${API_KEY:-}\\"\\" --sourcemap",
+    "start": "esbuild index.tsx --bundle --outfile=dist/bundle.js --jsx=automatic --platform=browser --define:process.env.API_KEY=\\"\\"${API_KEY:-}\\"\\" --sourcemap --servedir=. --port=3000",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^1.5.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.5.3"
+  }
+}

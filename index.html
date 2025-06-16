@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Granjas NG Backyard Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pf-green-light': '#F0FFF4', // Very light green, often for backgrounds
+            'pf-green': '#38A169',      // Main green for primary actions
+            'pf-green-dark': '#2F855A', // Darker green for hover or accents
+            'pf-brown-light': '#FFFBF0', // Very light brown/cream, for backgrounds or cards
+            'pf-brown': '#D69E2E',      // Main brown/amber for secondary actions or accents
+            'pf-brown-dark': '#B7791F',  // Darker brown for hover or accents
+            'pf-text': '#2D3748',       // Primary text color (dark gray)
+            'pf-text-secondary': '#718096', // Secondary text color (medium gray)
+            'pf-gold': '#F59E0B',       // Gold/Amber for brand name "Granjas NG"
+            'pf-gray-ultralight': '#F9FAFB', // New: Very light gray for card headers or subtle backgrounds
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.5.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-pf-green-light font-sans text-pf-text">
+  <div id="root"></div>
+  <script defer src="dist/bundle.js"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
