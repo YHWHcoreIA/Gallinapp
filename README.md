@@ -5,6 +5,17 @@ y TypeScript para un desarrollo robusto. Su capacidad de funcionar offline (una 
 datos en localStorage), junto con la integración de IA y herramientas de exportación, la convierten
 en una solución potente para pequeños granjeros.
 
+# Principales Funciones
+
+## Gestión agrícola integral para pequeños granjeros
+## Interfaz de usuario dinámica y desarrollo robusto
+## Capacidad de funcionar offline con datos almacenados en localStorage
+## Integración de herramientas de IA y exportación de datos
+
+# Tecnologías Utilizadas
+## React
+## TypeScript
+
 # Funcionalidades de Gallinapp para la Gestión Agrícola
 Gestión de Cultivos:
 
