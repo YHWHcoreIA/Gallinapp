@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useData } from '../contexts/DataContext';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { ICONS } from '../constants';
-import { InventoryCategory, IncubationBatch } from '../types'; 
+import { InventoryCategory, IncubationBatch } from '../types';
 import { generateXML, generatePDF, downloadFile, AppData } from '../utils/exportData';
 
 
@@ -18,11 +18,11 @@ const DashboardPage: React.FC = () => {
   const getTodayISO = () => new Date().toISOString().split('T')[0];
   const getStartOfWeekISO = () => {
     const today = new Date();
-    const dayOfWeek = today.getDay(); 
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); 
+    const dayOfWeek = today.getDay();
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
     return new Date(today.setDate(diff)).toISOString().split('T')[0];
   };
-  
+
   const today = getTodayISO();
   const startOfWeek = getStartOfWeekISO();
 
@@ -39,8 +39,30 @@ const DashboardPage: React.FC = () => {
     .reduce((sum, item) => sum + item.currentQuantity, 0);
 
   const eggsInIncubation = incubationBatches
-    .filter((batch: IncubationBatch) => !batch.actualHatchDate) 
+    .filter((batch: IncubationBatch) => !batch.actualHatchDate)
     .reduce((sum, batch) => sum + batch.eggsSet, 0);
+  const weeklyEggData = useMemo(() => {
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toISOString().split('T')[0];
+    }).reverse();
+
+    const data = last7Days.map(date => {
+        const totalEggs = eggLogs
+            .filter(log => log.date === date)
+            .reduce((sum, log) => sum + log.quantity, 0);
+        return {
+            date,
+            day: new Date(date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'short' }),
+            eggs: totalEggs,
+        };
+    });
+    return data;
+  }, [eggLogs]);
+
+  const maxWeeklyEggs = useMemo(() => Math.max(...weeklyEggData.map(d => d.eggs), 1), [weeklyEggData]);
+
 
   const handleDownloadXML = async () => {
     setIsDownloadingXml(true);
@@ -76,7 +98,7 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-pf-text">Dashboard</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"> {/* Adjusted grid for 5 items */}
         {/* 1. Total Gallinas */}
         <Card className="bg-pf-green text-white" aria-labelledby="total-chickens-label">
@@ -92,7 +114,7 @@ const DashboardPage: React.FC = () => {
         {/* 2. Pollos de Engorde */}
         <Card className="bg-pf-brown-light text-pf-brown-dark" aria-labelledby="broilers-label">
            <div className="flex items-center">
-            <ICONS.Chicken className="w-10 h-10 md:w-12 md:h-12 mr-3 md:mr-4 text-pf-brown-dark" /> 
+            <ICONS.Chicken className="w-10 h-10 md:w-12 md:h-12 mr-3 md:mr-4 text-pf-brown-dark" />
             <div>
               <p className="text-3xl md:text-4xl font-bold">{totalBroilers}</p>
               <p id="broilers-label" className="text-md md:text-lg">Pollos de Engorde</p>
@@ -110,7 +132,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
         </Card>
-        
+
         {/* 4. Huevos Hoy */}
         <Card className="bg-pf-brown text-white" aria-labelledby="eggs-today-label">
            <div className="flex items-center">
@@ -133,24 +155,40 @@ const DashboardPage: React.FC = () => {
           </div>
         </Card>
       </div>
+      <Card title="Producción de Huevos (Últimos 7 Días)">
+          <div className="flex justify-between items-end h-48 p-4">
+              {weeklyEggData.map(data => (
+                  <div key={data.date} className="flex flex-col items-center w-1/7">
+                      <div className="text-sm font-bold text-pf-text">{data.eggs}</div>
+                      <div
+                          className="w-8 bg-pf-green rounded-t-md"
+                          style={{ height: `${(data.eggs / maxWeeklyEggs) * 100}%` }}
+                          title={`${data.eggs} huevos`}
+                      ></div>
+                      <div className="text-xs text-pf-text-secondary mt-1">{data.day}</div>
+                  </div>
+              ))}
+          </div>
+      </Card>
+
 
       <Card title="Descargar Datos">
         <p className="text-pf-text-secondary mb-4">
           Descargue todos los datos de su aplicación en formato XML o PDF.
         </p>
         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-          <Button 
-            onClick={handleDownloadXML} 
-            disabled={isDownloadingXml || isDownloadingPdf} 
+          <Button
+            onClick={handleDownloadXML}
+            disabled={isDownloadingXml || isDownloadingPdf}
             leftIcon={<ICONS.Download className="w-5 h-5" />}
             variant="secondary"
             className="w-full sm:w-auto"
           >
             {isDownloadingXml ? 'Generando XML...' : 'Descargar XML'}
           </Button>
-          <Button 
-            onClick={handleDownloadPDF} 
-            disabled={isDownloadingPdf || isDownloadingXml} 
+          <Button
+            onClick={handleDownloadPDF}
+            disabled={isDownloadingPdf || isDownloadingXml}
             leftIcon={<ICONS.Download className="w-5 h-5" />}
             variant="secondary"
             className="w-full sm:w-auto"
