@@ -5,6 +5,37 @@ y TypeScript para un desarrollo robusto. Su capacidad de funcionar offline (una 
 datos en localStorage), junto con la integración de IA y herramientas de exportación, la convierten
 en una solución potente para pequeños granjeros.
 
+# Funcionalidades de Gallinapp para la Gestión Agrícola
+Gestión de Cultivos:
+
+## Seguimiento del crecimiento de diferentes cultivos.
+Registro de fechas de siembra y cosecha.
+Control de Inventario:
+
+## Monitoreo de insumos agrícolas (fertilizantes, semillas, etc.).
+Gestión de stock y alertas de bajo inventario.
+Planificación de Tareas:
+
+## Programación de actividades agrícolas (riego, fertilización).
+Recordatorios y notificaciones para tareas pendientes.
+Análisis de Datos:
+
+## Generación de informes sobre rendimiento de cultivos.
+Análisis de costos y beneficios.
+Integración de Herramientas de IA:
+
+## Predicciones sobre el clima y su impacto en los cultivos.
+Sugerencias para optimizar el uso de recursos.
+
+## Funcionalidad Offline:
+Acceso a datos y funcionalidades sin conexión a internet.
+
+## Exportación de Datos:
+Posibilidad de exportar información a formatos como CSV o Excel para análisis externo.
+
+## Interfaz Amigable:
+Diseño intuitivo que facilita la navegación y el uso de la aplicación.
+
 # Run and deploy your AI Studio app
 
 This contains everything you need to run your app locally.
