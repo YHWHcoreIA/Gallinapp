@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
 import { Chicken, BreedInfo, GroundingChunk, Page } from '../types';
@@ -38,7 +37,9 @@ const ChickensPage: React.FC = () => {
   const { chickens, addChicken, updateChicken, deleteChicken } = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingChicken, setEditingChicken] = useState<Chicken | undefined>(undefined);
-  
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [deletingChickenId, setDeletingChickenId] = useState<string | null>(null);
+
   const [formBreed, setFormBreed] = useState<string>(''); // For live breed updates from form
 
   const [breedInfo, setBreedInfo] = useState<BreedInfo | null>(null);
@@ -49,7 +50,7 @@ const ChickensPage: React.FC = () => {
   const handleOpenModal = (chicken?: Chicken) => {
     setEditingChicken(chicken);
     setFormBreed(chicken?.breed || ''); // Initialize formBreed
-    setBreedInfo(null); 
+    setBreedInfo(null);
     setBreedInfoError(undefined);
     setBreedInfoSources(null);
     setIsModalOpen(true);
@@ -65,20 +66,32 @@ const ChickensPage: React.FC = () => {
   };
 
   const handleSubmitChicken = (chickenData: Omit<Chicken, 'id'> | Chicken) => {
-    if ('id' in chickenData) { 
+    if ('id' in chickenData) {
       updateChicken(chickenData as Chicken);
-    } else { 
+    } else {
       addChicken(chickenData);
     }
     handleCloseModal();
   };
 
-  const handleDeleteChicken = (id: string) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar esta gallina?')) {
-      deleteChicken(id);
-    }
+  const handleDeleteRequest = (id: string) => {
+      setDeletingChickenId(id);
+      setIsConfirmModalOpen(true);
   };
-  
+
+  const confirmDelete = () => {
+      if (deletingChickenId) {
+          deleteChicken(deletingChickenId);
+          setDeletingChickenId(null);
+          setIsConfirmModalOpen(false);
+      }
+  };
+
+  const cancelDelete = () => {
+      setDeletingChickenId(null);
+      setIsConfirmModalOpen(false);
+  };
+
   const fetchBreedInfoCallback = useCallback(async (breedNameToFetch: string) => {
     if (!breedNameToFetch.trim()) {
         setBreedInfoError("Por favor, introduce un nombre de raza.");
@@ -122,11 +135,11 @@ const ChickensPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {chickens.map((chicken) => (
-            <ChickenCard 
-              key={chicken.id} 
+            <ChickenCard
+              key={chicken.id}
               chicken={chicken}
               onEdit={() => handleOpenModal(chicken)}
-              onDelete={() => handleDeleteChicken(chicken.id)}
+              onDelete={() => handleDeleteRequest(chicken.id)}
             />
           ))}
         </div>
@@ -137,13 +150,13 @@ const ChickensPage: React.FC = () => {
         onClose={handleCloseModal}
         title={editingChicken ? 'Editar Gallina' : 'Añadir Nueva Gallina'}
       >
-        <ChickenForm 
-          onSubmit={handleSubmitChicken} 
+        <ChickenForm
+          onSubmit={handleSubmitChicken}
           initialData={editingChicken}
           onBreedChange={setFormBreed} // Pass callback to update formBreed
         />
         { isModalOpen && ( // Only render if modal is open
-            <BreedInfoSection 
+            <BreedInfoSection
                 breedName={formBreed} // Use live formBreed
                 breedInfo={breedInfo}
                 sources={breedInfoSources}
@@ -152,6 +165,19 @@ const ChickensPage: React.FC = () => {
                 onFetchBreedInfo={fetchBreedInfoCallback}
             />
         )}
+      </Modal>
+      <Modal
+          isOpen={isConfirmModalOpen}
+          onClose={cancelDelete}
+          title="Confirmar Eliminación"
+      >
+          <div>
+              <p>¿Estás seguro de que quieres eliminar esta gallina?</p>
+              <div className="flex justify-end space-x-4 mt-4">
+                  <Button variant="ghost" onClick={cancelDelete}>Cancelar</Button>
+                  <Button variant="danger" onClick={confirmDelete}>Eliminar</Button>
+              </div>
+          </div>
       </Modal>
     </div>
   );
